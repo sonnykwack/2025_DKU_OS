@@ -2,8 +2,10 @@
 
 
 This is a place for studying Operaing System in Dankook University.
-- Professor : Jongmoo Choi
-- Assistant : Yeojin Oh (oyj5420@dankook.ac.kr), Boseung Kim (bskim1102@dankook.ac.kr)
+
+### Professor / Assistant
+- Class 1: Jongmoo Choi / Yeojin Oh (oyj5420@dankook.ac.kr)
+- Class 3: Gunhee Choi / Boseung Kim (bskim1102@dankook.ac.kr) 
 - 2025 DKU Operating System Course Information [(Link)](http://embedded.dankook.ac.kr/~choijm/course/course.html#OS)
 
 ## Download Environment
