@@ -30,9 +30,9 @@ CPU Virtualization을 위한 Scheduling 기법을 구현하고 이들의 성능�
 ### Getting Start
 How to start lab1?
 ```
-git clone https://github.com/DKU-EmbeddedSystem-Lab/2025_DKU_OS.git # clone repository
-cd lab1 # enter lab1 directory
-./run.sh # make & excution program 
+git clone https://github.com/DKU-EmbeddedSystem-Lab/2025_DKU_OS.git // clone repository
+cd lab1                                                             // enter lab1 directory
+./run.sh                                                            // make & excution program 
 ```
 
 
