@@ -28,7 +28,7 @@ Lab0 contains information about installing a virtual machine and Ubuntu. Set the
 CPU Virtualization을 위한 Scheduling 기법을 구현하고 이들의 성능을 비교한다. 
 - [Lab1 Document]()
 ### Getting Start
-How to start lab1?
+
 ```
 git clone https://github.com/DKU-EmbeddedSystem-Lab/2025_DKU_OS.git // clone repository
 ./install_package.sh                                                // install required packages
