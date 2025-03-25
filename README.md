@@ -4,7 +4,7 @@
 This is a place for studying Operaing System in Dankook University.
 
 ### Professor / Assistant
-- Class 1: Jongmoo Choi / Yeojin Oh (oyj5420@dankook.ac.kr)
+- Class 1: Jongmoo Choi / Yeojin Oh (yeojinoh@dankook.ac.kr)
 - Class 3: Gunhee Choi / Boseung Kim (bskim1102@dankook.ac.kr) 
 - 2025 DKU Operating System Course Information [(Link)](http://embedded.dankook.ac.kr/~choijm/course/course.html#OS)
 
@@ -31,6 +31,7 @@ CPU Virtualization을 위한 Scheduling 기법을 구현하고 이들의 성능�
 How to start lab1?
 ```
 git clone https://github.com/DKU-EmbeddedSystem-Lab/2025_DKU_OS.git // clone repository
+./install_package.sh                                                // install required packages
 cd lab1                                                             // enter lab1 directory
 ./run.sh                                                            // make & excution program 
 ```
