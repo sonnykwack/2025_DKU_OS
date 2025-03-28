@@ -25,7 +25,7 @@ Lab0 contains information about installing a virtual machine and Ubuntu. Set the
 - [Lab0 Document]([DKU_OS_LAB0]%20Linux%20Install%20Manual.pdf)
 
 ## Lab1
-CPU Virtualization을 위한 Scheduling 기법을 구현하고 이들의 성능을 비교한다. 
+Implement scheduling techniques for CPU virtualization and compare their performance. 
 - [Lab1 Document]()
 ### Getting Start
 
