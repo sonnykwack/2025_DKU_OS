@@ -29,7 +29,7 @@ Implement scheduling techniques for CPU virtualization and compare their perform
 - [Lab1 Document](https://github.com/DKU-EmbeddedSystem-Lab/2025_DKU_OS/blob/main/%5BDKU_OS_LAB1%5D%20CPU%20Virtualization.pdf)
 - Class 1
   - [Google Form](https://forms.gle/XGvaHxAuXT39XUkR6)
-  - Deadline: **2025.04.15 23:59**
+  - Deadline: **2025.04.22 23:59**
 - Class 3
   - [Google Form](https://forms.gle/HXSmrauZpNmPu1co7)
   - Deadline: **2025.04.16 23:59**
