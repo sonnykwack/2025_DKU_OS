@@ -32,7 +32,7 @@ Implement scheduling techniques for CPU virtualization and compare their perform
   - Deadline: **2025.04.22 23:59**
 - Class 3
   - [Google Form](https://forms.gle/HXSmrauZpNmPu1co7)
-  - Deadline: **2025.04.16 23:59**
+  - Deadline: **2025.05.02 23:59**
 ### Getting Start
 
 ```
