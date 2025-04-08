@@ -2,7 +2,7 @@
 CXX = g++
 
 # 컴파일러 플래그 설정
-CXXFLAGS = -std=c++11 -g -Wno-deprecated-declarations
+CXXFLAGS = -std=c++14 -g -Wno-deprecated-declarations
 
 # 라이브러리 플래그
 LDFLAGS = -lpthread -lgtest -lcrypto 
