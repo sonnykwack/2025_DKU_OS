@@ -33,6 +33,8 @@ Implement scheduling techniques for CPU virtualization and compare their perform
 - Class 3
   - [Google Form](https://forms.gle/HXSmrauZpNmPu1co7)
   - Deadline: **2025.05.02 23:59**
+ 
+2025/04/08 Issue - Makefile [link](https://github.com/DKU-EmbeddedSystem-Lab/2025_DKU_OS/issues/1)
 ### Getting Start
 
 ```
