@@ -1,8 +1,9 @@
 #include <pthread.h>
+#include <iostream>
 #ifndef SKIPLIST_H
 #define SKIPLIST_H
 
-/// @brief Key, Value, Update Count 구조체, 정답 검증 시 사용
+/// @brief Key, Value, Update Count 구조체
 struct KVC {
     int key;
     int value;
@@ -28,8 +29,6 @@ class DefaultSkipList {
     protected:
         // 최대 레벨
         int max_level_;
-        // 현재 레벨
-        int current_level_;
         // 확률 계수 (0.5)
         float prob_;
         // 헤드 노드
@@ -38,8 +37,6 @@ class DefaultSkipList {
     public:
         DefaultSkipList(int max_level = 16, float prob = 0.5);
         virtual ~DefaultSkipList();
-        
-        Node* get_header() { return header_; }  // header_에 접근하기 위한 public 메서드 추가
         
         /**
          * @brief 삽입 함수 : 인자로 받은 key와 value를 저장한다
@@ -65,7 +62,23 @@ class DefaultSkipList {
          * @param key 
          */
         virtual void remove(int key) = 0;
-        
+
+        /**
+         * @brief 모든 노드를 순회하여, 배열에 저장한다.
+         * check_answer 함수에서 사용되는 함수
+         * @param arr 
+         */
+        void traversal(KVC* arr) {
+            Node* current = header_->forward[0];
+            int index = 0;
+            while (current != nullptr) {
+                arr[index].key = current->key;
+                arr[index].value = current->value;
+                arr[index].upd_cnt = current->upd_cnt;
+                index++;
+                current = current->forward[0];
+            }
+        };
     protected:
         /**
          * @brief 랜덤으로 레벨을 생성하는 함수

@@ -1,17 +1,17 @@
 # Compiler 변수 설정: g++ 사용
 CXX=g++
 
-# 컴파일러 플래그 설정: -std=c++11은 C++11 표준 사용을 의미함
-CXXFLAGS=-std=c++11 -g 
+# 컴파일러 플래그 설정
+CXXFLAGS = -std=c++14 -g 
 
-LDFLAGS=-lpthread -lgtest 
+LDFLAGS = -lpthread -lgtest 
 
 # Source files
-SOURCES=test.cpp skiplist_impl.cpp test_util.cpp
-OBJECTS=$(SOURCES:.cpp=.o)
+SOURCES = test.cpp skiplist_impl.cpp test_util.cpp
+OBJECTS = $(SOURCES:.cpp=.o)
 
 # Executable name
-EXECUTABLE=test
+EXECUTABLE = test
 
 all: $(SOURCES) $(EXECUTABLE)
 

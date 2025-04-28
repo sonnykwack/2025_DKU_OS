@@ -9,7 +9,7 @@
  * INSERT_ONLY : workload num 만큼 insert한 후, single-thread로 중위 순회한다.
  * INSERT_LOOKUP : workload num 만큼 insert(50%). lookup(50%)한 후, single-thread로 중위 순회한다.
  * INSERT_LOOKUP_DELETE : workload num 만큼 insert(60%), lookup(20%), delete(20%)한다. 
- *                        Single-thread인 경우는 순회를 수행하나, multi-thread인 경우 순회를 수행하지 않는다.
+ *                        Single-thread인 경우는 중위 순회를 수행하나, multi-thread인 경우 중위 순회를 수행하지 않는다.
  */
 enum WL_TYPE{INSERT_ONLY, INSERT_LOOKUP, INSERT_LOOKUP_DELETE};
 

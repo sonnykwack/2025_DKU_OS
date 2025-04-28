@@ -22,6 +22,7 @@ class SkipList : public DefaultSkipList {
         void insert(int key, int value) override;
         int lookup(int key) override;
         void remove(int key) override;
+        void traversal(KVC* arr);
 };
 
 /**
@@ -45,6 +46,7 @@ class CoarseSkipList : public DefaultSkipList {
         void insert(int key, int value) override;
         int lookup(int key) override;
         void remove(int key) override;
+        void traversal(KVC* arr);
 };
 
 /// @brief FineSkipList는 FineNode를 정의하여 사용하길 권장한다.
@@ -74,5 +76,6 @@ class FineSkipList : public DefaultSkipList {
         void insert(int key, int value) override;
         int lookup(int key) override;
         void remove(int key) override;
+        void traversal(KVC* arr);
 };
-#endif 
+#endif
