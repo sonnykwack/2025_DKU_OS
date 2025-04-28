@@ -1,6 +1,6 @@
 /*
 *	DKU Operating System Lab
-*	    Lab2 (Concurrency)
+*	    Lab2 (Concurrent Data Structure : Skip List)
 *	    Student id : 
 *	    Student name : 
 *	    Date : 
