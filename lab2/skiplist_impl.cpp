@@ -278,7 +278,7 @@ void FineSkipList::insert(int key, int value) {
 
     for (int i = max_level_; i >= 0; --i) {
         Node* next = current->forward[i];
-        while (next != nullptr && next->key < key) {
+        while (next && next->key < key) {
             pthread_mutex_lock(&next->lock);
             pthread_mutex_unlock(&current->lock);
             current = next;
@@ -288,10 +288,9 @@ void FineSkipList::insert(int key, int value) {
     }
 
     Node* target = current->forward[0];
-    if (target != nullptr)
-        pthread_mutex_lock(&target->lock);
+    if (target) pthread_mutex_lock(&target->lock);
 
-    if (target != nullptr && target->key == key) {
+    if (target && target->key == key) {
         target->value += value;
         target->upd_cnt += 1;
         pthread_mutex_unlock(&target->lock);
@@ -312,19 +311,18 @@ void FineSkipList::insert(int key, int value) {
         }
     }
 
-    if (target)
-        pthread_mutex_unlock(&target->lock);
-    for (int i = 0; i <= max_level_; ++i) {
+    if (target) pthread_mutex_unlock(&target->lock);
+    for (int i = 0; i <= max_level_; ++i)
         pthread_mutex_unlock(&update[i]->lock);
-    }
+
 }
 
 // FineSkipList::lookup
 int FineSkipList::lookup(int key) {
-    Node* current = header_;
+        Node* current = header_;
     pthread_mutex_lock(&current->lock);
 
-    for (int i = max_level_; i >= 0; i--) {
+    for (int i = max_level_; i >= 0; --i) {
         Node* next = current->forward[i];
         while (next && next->key < key) {
             pthread_mutex_lock(&next->lock);
@@ -339,9 +337,7 @@ int FineSkipList::lookup(int key) {
 
     if (target) {
         pthread_mutex_lock(&target->lock);
-        if (target->key == key) {
-	    result = target->value;
-	}
+        if (target->key == key) result = target->value;
         pthread_mutex_unlock(&target->lock);
     }
 
@@ -353,10 +349,9 @@ int FineSkipList::lookup(int key) {
 void FineSkipList::remove(int key) {
     Node* update[max_level_ + 1];
     Node* current = header_;
-
     pthread_mutex_lock(&current->lock);
 
-    for (int i = max_level_; i >= 0; i--) {
+    for (int i = max_level_; i >= 0; --i) {
         Node* next = current->forward[i];
         while (next && next->key < key) {
             pthread_mutex_lock(&next->lock);
@@ -371,7 +366,7 @@ void FineSkipList::remove(int key) {
     if (target) pthread_mutex_lock(&target->lock);
 
     if (target && target->key == key) {
-        for (int i = 0; i <= target->level; i++) {
+        for (int i = 0; i <= target->level; ++i) {
             if (update[i]->forward[i] == target)
                 update[i]->forward[i] = target->forward[i];
         }
@@ -381,10 +376,9 @@ void FineSkipList::remove(int key) {
         delete[] target->forward;
         delete target;
     } else {
-        if (target != nullptr) pthread_mutex_unlock(&target->lock);
+        if (target) pthread_mutex_unlock(&target->lock);
     }
 
-    for (int i = 0; i <= max_level_; ++i) {
+    for (int i = 0; i <= max_level_; ++i)
         pthread_mutex_unlock(&update[i]->lock);
-    }
 }
