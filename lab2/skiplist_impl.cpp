@@ -312,9 +312,8 @@ void FineSkipList::insert(int key, int value) {
         }
     }
 
-    if (target != nullptr)
+    if (target)
         pthread_mutex_unlock(&target->lock);
-
     for (int i = 0; i <= max_level_; ++i) {
         pthread_mutex_unlock(&update[i]->lock);
     }
@@ -325,9 +324,9 @@ int FineSkipList::lookup(int key) {
     Node* current = header_;
     pthread_mutex_lock(&current->lock);
 
-    for (int i = max_level_; i >= 0; --i) {
+    for (int i = max_level_; i >= 0; i--) {
         Node* next = current->forward[i];
-        while (next != nullptr && next->key < key) {
+        while (next && next->key < key) {
             pthread_mutex_lock(&next->lock);
             pthread_mutex_unlock(&current->lock);
             current = next;
@@ -338,9 +337,11 @@ int FineSkipList::lookup(int key) {
     Node* target = current->forward[0];
     int result = 0;
 
-    if (target != nullptr) {
+    if (target) {
         pthread_mutex_lock(&target->lock);
-        if (target->key == key) result = target->value;
+        if (target->key == key) {
+	    result = target->value;
+	}
         pthread_mutex_unlock(&target->lock);
     }
 
@@ -355,9 +356,9 @@ void FineSkipList::remove(int key) {
 
     pthread_mutex_lock(&current->lock);
 
-    for (int i = max_level_; i >= 0; --i) {
+    for (int i = max_level_; i >= 0; i--) {
         Node* next = current->forward[i];
-        while (next != nullptr && next->key < key) {
+        while (next && next->key < key) {
             pthread_mutex_lock(&next->lock);
             pthread_mutex_unlock(&current->lock);
             current = next;
@@ -367,10 +368,10 @@ void FineSkipList::remove(int key) {
     }
 
     Node* target = current->forward[0];
-    if (target != nullptr) pthread_mutex_lock(&target->lock);
+    if (target) pthread_mutex_lock(&target->lock);
 
-    if (target != nullptr && target->key == key) {
-        for (int i = 0; i <= target->level; ++i) {
+    if (target && target->key == key) {
+        for (int i = 0; i <= target->level; i++) {
             if (update[i]->forward[i] == target)
                 update[i]->forward[i] = target->forward[i];
         }

@@ -2,9 +2,9 @@
 CXX=g++
 
 # 컴파일러 플래그 설정
-CXXFLAGS = -std=c++14 -g 
+CXXFLAGS = -std=c++17 -g 
 
-LDFLAGS = -lpthread -lgtest 
+LDFLAGS = -lpthread /usr/lib/libgtest.a /usr/lib/libgtest_main.a 
 
 # Source files
 SOURCES = test.cpp skiplist_impl.cpp test_util.cpp
