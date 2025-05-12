@@ -22,6 +22,8 @@ struct Node {
     int level;
     // 다음 노드들의 포인터 배열 (레벨 별로 다음 노드 가르킴)
     Node** forward;
+
+    pthread_mutex_t lock;
 };
 
 /// @brief SkipList 부모 클래스.
