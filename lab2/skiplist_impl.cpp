@@ -271,6 +271,11 @@ FineSkipList::~FineSkipList() {
 
 // FineSkipList::insert
 void FineSkipList::insert(int key, int value) {
+   static bool header_initialized = false;
+if (!header_initialized) {
+    pthread_mutex_init(&header_->lock, nullptr);
+    header_initialized = true;
+}
     Node* update[max_level_ + 1];
     Node* current = header_;
 
