@@ -9,6 +9,15 @@
 #include "skiplist_impl.h"
 #include <cstdlib>
 #include <ctime>
+#include <unordered_set>
+
+static pthread_once_t header_init_once = PTHREAD_ONCE_INIT;
+static FineNode* header_node_for_init = nullptr;
+
+static void init_header_mutex() {
+    pthread_mutex_init(&(header_node_for_init->lock), nullptr);
+}
+
 
 // DefaultSkipList 생성자
 DefaultSkipList::DefaultSkipList(int max_level, float prob) {
@@ -202,8 +211,11 @@ int CoarseSkipList::lookup(int key) {
 
     current = current->forward[0];
 
-    int result = (current != nullptr && current->key == key) ? current->value : 0;
-
+    int result = 0;
+    if (current != nullptr && current->key == key) {
+     result = current->value;
+     }
+     
     pthread_mutex_unlock(&mutex_lock);
     return result;
 }
@@ -239,60 +251,61 @@ void CoarseSkipList::remove(int key) {
 // FineSkipList 생성자
 FineSkipList::FineSkipList(int max_level, float prob) : DefaultSkipList(max_level, prob) {
     delete header_;
-    header_ = new Node();
+    header_ = new FineNode();
     header_->key = -1;
     header_->value = -1;
     header_->upd_cnt = 0;
     header_->level = max_level_;
-
+    
     header_->forward = new Node*[max_level_ + 1];
     for (int level = 0; level <= max_level_; level++) {
         header_->forward[level] = nullptr;
     }
-
-    pthread_mutex_init(&header_->lock, nullptr);
 }
 
 // FineSkipList 소멸자
 FineSkipList::~FineSkipList() {
-    Node* current = header_;
-    Node* temp;
-
-    while (current != nullptr) {
-        temp = current->forward[0];
-        pthread_mutex_destroy(&current->lock);
+    FineNode* current = (FineNode*)header_;
+    FineNode* temp;
+    
+    while(current) {
+        temp = (FineNode*)current->forward[0];
+        pthread_mutex_destroy(&((FineNode*)current)->lock);
         delete[] current->forward;
         delete current;
         current = temp;
     }
-
+    
     header_ = nullptr;
 }
 
 // FineSkipList::insert
 void FineSkipList::insert(int key, int value) {
-   static bool header_initialized = false;
-if (!header_initialized) {
-    pthread_mutex_init(&header_->lock, nullptr);
-    header_initialized = true;
-}
-    Node* update[max_level_ + 1];
-    Node* current = header_;
+    // TODO
+    header_node_for_init = static_cast<FineNode*>(header_);
+    pthread_once(&header_init_once, init_header_mutex);
 
+    FineNode* update[max_level_ + 1];
+    if (current->lock.__data.__owner != 0 && current->lock.__data.__owner != PTHREAD_MUTEX_OWNER_INVALID) {
+    fprintf(stderr, "⚠️ header_->lock appears uninitialized!\n");
+    abort();
+}
+
+    FineNode* current = static_cast<FineNode*>(header_);
     pthread_mutex_lock(&current->lock);
 
     for (int i = max_level_; i >= 0; --i) {
-        Node* next = current->forward[i];
+        FineNode* next = static_cast<FineNode*>(current->forward[i]);
         while (next && next->key < key) {
             pthread_mutex_lock(&next->lock);
             pthread_mutex_unlock(&current->lock);
             current = next;
-            next = current->forward[i];
+            next = static_cast<FineNode*>(current->forward[i]);
         }
         update[i] = current;
     }
 
-    Node* target = current->forward[0];
+    FineNode* target = static_cast<FineNode*>(current->forward[0]);
     if (target) pthread_mutex_lock(&target->lock);
 
     if (target && target->key == key) {
@@ -301,13 +314,12 @@ if (!header_initialized) {
         pthread_mutex_unlock(&target->lock);
     } else {
         int new_level = random_level();
-        Node* new_node = new Node();
+        FineNode* new_node = new FineNode();
         new_node->key = key;
         new_node->value = value;
         new_node->upd_cnt = 0;
         new_node->level = new_level;
         new_node->forward = new Node*[new_level + 1];
-
         pthread_mutex_init(&new_node->lock, nullptr);
 
         for (int i = 0; i <= new_level; ++i) {
@@ -316,60 +328,66 @@ if (!header_initialized) {
         }
     }
 
-    if (target) pthread_mutex_unlock(&target->lock);
-    for (int i = 0; i <= max_level_; ++i)
-        pthread_mutex_unlock(&update[i]->lock);
-
+    std::unordered_set<FineNode*> unlocked;
+    if (target && unlocked.insert(target).second) pthread_mutex_unlock(&target->lock);
+    for (int i = 0; i <= max_level_; ++i) {
+        if (update[i] && unlocked.insert(update[i]).second) {
+            pthread_mutex_unlock(&update[i]->lock);
+        }
+    }
 }
 
-// FineSkipList::lookup
 int FineSkipList::lookup(int key) {
-        Node* current = header_;
+    // TODO
+    FineNode* current = static_cast<FineNode*>(header_);
     pthread_mutex_lock(&current->lock);
 
     for (int i = max_level_; i >= 0; --i) {
-        Node* next = current->forward[i];
+        FineNode* next = static_cast<FineNode*>(current->forward[i]);
         while (next && next->key < key) {
             pthread_mutex_lock(&next->lock);
             pthread_mutex_unlock(&current->lock);
             current = next;
-            next = current->forward[i];
+            next = static_cast<FineNode*>(current->forward[i]);
         }
     }
 
-    Node* target = current->forward[0];
+    FineNode* target = static_cast<FineNode*>(current->forward[0]);
     int result = 0;
 
+    std::unordered_set<FineNode*> unlocked;
     if (target) {
         pthread_mutex_lock(&target->lock);
         if (target->key == key) result = target->value;
         pthread_mutex_unlock(&target->lock);
+        unlocked.insert(target);
     }
 
-    pthread_mutex_unlock(&current->lock);
+    if (unlocked.insert(current).second) pthread_mutex_unlock(&current->lock);
     return result;
 }
 
-// FineSkipList::remove
 void FineSkipList::remove(int key) {
-    Node* update[max_level_ + 1];
-    Node* current = header_;
+    // TODO
+    FineNode* update[max_level_ + 1];
+    FineNode* current = static_cast<FineNode*>(header_);
     pthread_mutex_lock(&current->lock);
 
     for (int i = max_level_; i >= 0; --i) {
-        Node* next = current->forward[i];
+        FineNode* next = static_cast<FineNode*>(current->forward[i]);
         while (next && next->key < key) {
             pthread_mutex_lock(&next->lock);
             pthread_mutex_unlock(&current->lock);
             current = next;
-            next = current->forward[i];
+            next = static_cast<FineNode*>(current->forward[i]);
         }
         update[i] = current;
     }
 
-    Node* target = current->forward[0];
+    FineNode* target = static_cast<FineNode*>(current->forward[0]);
     if (target) pthread_mutex_lock(&target->lock);
 
+    std::unordered_set<FineNode*> unlocked;
     if (target && target->key == key) {
         for (int i = 0; i <= target->level; ++i) {
             if (update[i]->forward[i] == target)
@@ -377,13 +395,18 @@ void FineSkipList::remove(int key) {
         }
 
         pthread_mutex_unlock(&target->lock);
-        pthread_mutex_destroy(&target->lock);
-        delete[] target->forward;
-        delete target;
+        unlocked.insert(target);
     } else {
-        if (target) pthread_mutex_unlock(&target->lock);
+        if (target && unlocked.insert(target).second) pthread_mutex_unlock(&target->lock);
     }
 
-    for (int i = 0; i <= max_level_; ++i)
-        pthread_mutex_unlock(&update[i]->lock);
+    for (int i = 0; i <= max_level_; ++i) {
+        if (update[i] && unlocked.insert(update[i]).second) {
+            pthread_mutex_unlock(&update[i]->lock);
+        }
+    }
 }
+
+
+
+

@@ -59,6 +59,14 @@ class CoarseSkipList : public DefaultSkipList {
  */
 struct FineNode : public Node {
     pthread_mutex_t lock;
+    
+    FineNode() {
+    	pthread_mutex_init(&lock, nullptr);
+    }
+    
+    ~FineNode() {
+    	pthread_mutex_destroy(&lock);
+    }
 };
 
 /**
